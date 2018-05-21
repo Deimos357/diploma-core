@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="tanasiuk" id="create table user_info">
+        <createTable tableName="user_info">
+            <column name="id" type="INT" autoIncrement="true"/>
+            <column name="username" type="VARCHAR"/>
+            <column name="birthdate" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="password" type="VARCHAR"/>
+            <column name="email" type="VARCHAR"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="tanasiuk" id="pk user_info">
+        <addPrimaryKey columnNames="id" constraintName="user_info_pkey" tableName="user_info"/>
+    </changeSet>
+    <changeSet author="tanasiuk" id="added creation date for user identity">
+        <addColumn tableName="user_info">
+            <column name="creation_date" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

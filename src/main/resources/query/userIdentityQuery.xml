@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
+
+<properties>
+    <entry key='createUser'>
+        INSERT INTO user_info (
+            username,
+            birthdate,
+            password,
+            email,
+            creation_date
+        )
+        VALUES(
+            :username,
+            :birthdayDate,
+            :password,
+            :email,
+            :creationDate
+        )
+    </entry>
+    <entry key='findUserById'>
+        SELECT * FROM user_info WHERE id = :id
+    </entry>
+</properties>

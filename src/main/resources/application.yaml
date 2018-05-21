@@ -1,0 +1,41 @@
+spring:
+    profiles:
+        active: dev
+    application:
+         name: core
+    liquibase:
+        change-log: classpath:schema/changelog-master.xml
+
+server:
+    servlet:
+          context-path: /core
+
+---
+
+spring:
+    profiles: dev
+    datasource:
+        read:
+            jdbcUrl: jdbc:postgresql://localhost:5433/tripify
+            username: postgres
+            password: postgres
+            driver-class-name: org.postgresql.Driver
+        write:
+            jdbcUrl: jdbc:postgresql://localhost:5432/tripify
+            username: postgres
+            password: postgres
+            driver-class-name: org.postgresql.Driver
+logging:
+    level:
+        ua.nure.tanasiuk: debug
+
+server:
+    port: 8081
+
+route-creator:
+    host: http://localhost:8083
+    route: /route-creator/v1/route/
+
+auth:
+    host: http://localhost:8082
+    login-via-email: /auth/v1/login/email
