@@ -19,4 +19,136 @@
             <column name="creation_date" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
         </addColumn>
     </changeSet>
+    <changeSet author="tanasiuk" id="create table transport_type">
+        <createTable tableName="transport_type">
+            <column name="id" type="INT" autoIncrement="true"/>
+            <column name="name" type="VARCHAR"/>
+        </createTable>
+        <addPrimaryKey columnNames="id" constraintName="transport_type_pkey" tableName="transport_type"/>
+    </changeSet>
+    <changeSet author="tanasiuk" id="create table station">
+        <createTable tableName="station">
+            <column name="id" type="INT" autoIncrement="true"/>
+            <column name="name" type="VARCHAR"/>
+            <column name="latitude" type="DOUBLE"/>
+            <column name="longitude" type="DOUBLE"/>
+        </createTable>
+        <addPrimaryKey columnNames="id" constraintName="station_pkey" tableName="station"/>
+    </changeSet>
+    <changeSet author="tanasiuk" id="create table company">
+        <createTable tableName="company">
+            <column name="id" type="INT" autoIncrement="true"/>
+            <column name="name" type="VARCHAR"/>
+        </createTable>
+        <addPrimaryKey columnNames="id" constraintName="company_pkey" tableName="company"/>
+    </changeSet>
+    <changeSet author="tanasiuk" id="create table route">
+        <createTable tableName="route">
+            <column name="id" type="INT" autoIncrement="true"/>
+            <column name="owner_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_favorite" type="BOOLEAN"/>
+            <column name="creation_date" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+        </createTable>
+        <addPrimaryKey columnNames="id" constraintName="route_pkey" tableName="route"/>
+        <addForeignKeyConstraint baseColumnNames="owner_id"
+                                 baseTableName="route"
+                                 constraintName="owner_id_route_id_fk"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_info"/>
+    </changeSet>
+    <changeSet author="tanasiuk" id="create table ticket">
+        <createTable tableName="ticket">
+            <column name="id" type="INT" autoIncrement="true"/>
+            <column name="name" type="VARCHAR"/>
+            <column name="original_id" type="INT"/>
+            <column name="cost" type="DOUBLE"/>
+            <column name="duration" type="INT"/>
+            <column name="departure_time" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="transport_type_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="id" constraintName="ticket_pkey" tableName="ticket"/>
+        <addForeignKeyConstraint baseColumnNames="transport_type_id"
+                                 baseTableName="ticket"
+                                 constraintName="transport_type_id_ticket_fk"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="transport_type"/>
+        <addForeignKeyConstraint baseColumnNames="from_id"
+                                 baseTableName="ticket"
+                                 constraintName="from_id_ticket_fk"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="station"/>
+        <addForeignKeyConstraint baseColumnNames="to_id"
+                                 baseTableName="ticket"
+                                 constraintName="to_id_ticket_fk"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="station"/>
+        <addForeignKeyConstraint baseColumnNames="company_id"
+                                 baseTableName="ticket"
+                                 constraintName="company_id_ticket_fk"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="company"/>
+    </changeSet>
+    <changeSet author="tanasiuk" id="create table ticket_route">
+        <createTable tableName="ticket_route">
+            <column name="id" type="INT" autoIncrement="true"/>
+            <column name="ticket_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="route_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="id" constraintName="ticket_route_pkey" tableName="ticket_route"/>
+        <addForeignKeyConstraint baseColumnNames="ticket_id"
+                                 baseTableName="ticket_route"
+                                 constraintName="ticket_route_ticket_id_fk"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="ticket"/>
+        <addForeignKeyConstraint baseColumnNames="route_id"
+                                 baseTableName="ticket_route"
+                                 constraintName="ticket_route_route_id_fk"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="route"/>
+    </changeSet>
 </databaseChangeLog>
