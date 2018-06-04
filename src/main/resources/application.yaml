@@ -5,6 +5,9 @@ spring:
          name: core
     liquibase:
         change-log: classpath:schema/changelog-master.xml
+    jpa:
+      hibernate:
+        ddl-auto: none
 
 server:
     servlet:

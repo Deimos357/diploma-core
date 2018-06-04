@@ -6,14 +6,12 @@
     <entry key='createUser'>
         INSERT INTO user_info (
             username,
-            birthdate,
             password,
             email,
             creation_date
         )
         VALUES(
             :username,
-            :birthdayDate,
             :password,
             :email,
             :creationDate
