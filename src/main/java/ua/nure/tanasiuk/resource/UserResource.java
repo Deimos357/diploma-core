@@ -4,10 +4,8 @@ import io.swagger.annotations.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ua.nure.tanasiuk.dto.ChangePasswordDto;
 import ua.nure.tanasiuk.model.UserIdentity;
 import ua.nure.tanasiuk.service.UserService;
 
@@ -31,5 +29,29 @@ public class UserResource {
     @Authorization("Bearer")
     public ResponseEntity<UserIdentity> getCurrentUserProfile(@RequestParam Long requestInitiatorId) {
         return ResponseEntity.ok(userService.getCurrentUserProfile(requestInitiatorId));
+    }
+
+    @ApiOperation("")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "")
+    })
+    @PostMapping("/change-password")
+    @Authorization("Bearer")
+    public ResponseEntity changePassword(@RequestParam Long requestInitiatorId,
+                                         @RequestBody ChangePasswordDto changePasswordDto) {
+        userService.changePassword(changePasswordDto, requestInitiatorId);
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation("")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "")
+    })
+    @PutMapping("/me")
+    @Authorization("Bearer")
+    public ResponseEntity editProfile(@RequestParam Long requestInitiatorId,
+                                      @RequestBody UserIdentity userData) {
+        userService.editProfile(userData, requestInitiatorId);
+        return ResponseEntity.ok().build();
     }
 }

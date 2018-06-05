@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
+
+<properties>
+    <entry key='getRouteById'>
+        select r."name", r.id, r.creation_date, r.is_favorite, json_agg(a.*) as tickets
+        from route as r
+        inner join ticket_route as tr on tr.route_id = r.id
+        inner join (
+            select t.id, t."name", t.cost, t.duration, extract(epoch from (t.departure_time)) * 1000 as departureTime, t.transport_type_id as transport, t.is_available as available,
+            json_agg(st_from.*)->0 as "from", json_agg(st_to.*)->0 as "to", json_agg(c.*)->0 as company
+            from ticket as t
+            inner join station as st_to on t.to_id = st_to.id
+            inner join station as st_from on t.from_id = st_from.id
+            inner join company as c on c.id = t.company_id
+            group by t.id
+            order by t.departure_time
+        ) a on a.id = tr.ticket_id
+        where r.id = :id
+        group by r.id, r.creation_date, r.is_favorite
+    </entry>
+    <entry key='getFavorites'>
+        select r."name", r.id, r.creation_date, r.is_favorite, json_agg(a.*) as tickets
+        from route as r
+        inner join ticket_route as tr on tr.route_id = r.id
+        inner join (
+            select t.id, t."name", t.cost, t.duration, extract(epoch from (t.departure_time)) * 1000 as departureTime, t.transport_type_id as transport, t.is_available as available,
+            json_agg(st_from.*)->0 as "from", json_agg(st_to.*)->0 as "to", json_agg(c.*)->0 as company
+            from ticket as t
+            inner join station as st_to on t.to_id = st_to.id
+            inner join station as st_from on t.from_id = st_from.id
+            inner join company as c on c.id = t.company_id
+            group by t.id
+            order by t.departure_time
+        ) a on a.id = tr.ticket_id
+        where r.owner_id = :userId and r.is_favorite
+        group by r.id, r.creation_date, r.is_favorite
+    </entry>
+    <entry key='getHistory'>
+        select r."name", r.id, r.creation_date, r.is_favorite, json_agg(a.*) as tickets
+        from route as r
+        inner join ticket_route as tr on tr.route_id = r.id
+        inner join (
+            select t.id, t."name", t.cost, t.duration, extract(epoch from (t.departure_time)) * 1000 as departureTime, t.transport_type_id as transport, t.is_available as available,
+            json_agg(st_from.*)->0 as "from", json_agg(st_to.*)->0 as "to", json_agg(c.*)->0 as company
+            from ticket as t
+            inner join station as st_to on t.to_id = st_to.id
+            inner join station as st_from on t.from_id = st_from.id
+            inner join company as c on c.id = t.company_id
+            group by t.id
+            order by t.departure_time
+        ) a on a.id = tr.ticket_id
+        where r.owner_id = :userId
+        group by r.id, r.creation_date, r.is_favorite
+    </entry>
+    <entry key='switchFavorite'>
+        update route
+        set is_favorite = not is_favorite
+        where id = :id
+    </entry>
+    <entry key='getStations'>
+        select *
+        from station
+    </entry>
+    <entry key='createRoute'>
+        INSERT INTO route
+        (owner_id, is_favorite, creation_date, "name")
+        VALUES(:userId, false, now(), :name)
+    </entry>
+    <entry key='clearRoute'>
+        delete
+        from ticket_route
+        where route_id = :id
+    </entry>
+    <entry key='addTicket'>
+        INSERT INTO ticket_route
+        (ticket_id, route_id)
+        VALUES(:ticketId, :routeId)
+    </entry>
+    <entry key='getAlternative'>
+        select json_agg(t.*) as tickets
+        from (
+            select t.id, t."name", t.cost, t.duration, extract(epoch from (t.departure_time)) * 1000 as departureTime, t.transport_type_id as transport, t.is_available as available,
+            json_agg(st_from.*)->0 as "from", json_agg(st_to.*)->0 as "to", json_agg(c.*)->0 as company
+            from ticket as t
+            inner join station as st_to on t.to_id = st_to.id
+            inner join station as st_from on t.from_id = st_from.id
+            inner join company as c on c.id = t.company_id
+            inner join ticket as ttt on ttt.id = :id
+            where ttt.from_id = t.from_id and ttt.to_id = t.to_id and ttt.id != t.id
+            and t.departure_time >= ttt.departure_time - INTERVAL '12' HOUR
+            and ttt.departure_time + INTERVAL '12' HOUR  >= t.departure_time
+            group by t.id
+            order by t.departure_time
+        ) t
+    </entry>
+</properties>

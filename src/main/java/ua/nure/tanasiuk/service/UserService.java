@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.nure.tanasiuk.dao.UserIdentityDao;
+import ua.nure.tanasiuk.dto.ChangePasswordDto;
 import ua.nure.tanasiuk.model.UserIdentity;
 
 import java.util.Date;
@@ -30,5 +31,15 @@ public class UserService {
         user.setCreationDate(null);
         user.setPassword(null);
         return user;
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordDto changePasswordDto, Long requestInitiatorId) {
+        // TODO
+    }
+
+    @Transactional
+    public void editProfile(UserIdentity userData, Long requestInitiatorId) {
+        // TODO
     }
 }

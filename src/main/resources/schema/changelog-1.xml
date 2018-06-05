@@ -181,4 +181,13 @@
             ' LANGUAGE 'plpgsql'
         </sql>
     </changeSet>
+    <changeSet author="tanasiuk" id="drop order">
+        <dropColumn columnName="order"
+                    tableName="ticket_route"/>
+    </changeSet>
+    <changeSet id="add route name" author="tanasiuk">
+        <addColumn tableName="route">
+            <column name="name" type="VARCHAR"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
