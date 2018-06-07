@@ -85,10 +85,12 @@ public class RouteDao extends GenericDaoImpl<RouteDto> {
         return get(getById, params, routeDtoRowMapper);
     }
 
-    public Long create(String name, Long requestInitiatorId) {
+    public Long create(String name, Double factor, String transport, Long requestInitiatorId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("name", name);
         params.addValue("userId", requestInitiatorId);
+        params.addValue("factor", factor);
+        params.addValue("transport", transport);
         KeyHolder holder = new GeneratedKeyHolder();
         getNamedParameterJdbcTemplate().update(create, params, holder, new String[]{"id"});
         return holder.getKey().longValue();

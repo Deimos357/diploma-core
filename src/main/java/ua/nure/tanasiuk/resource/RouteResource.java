@@ -1,6 +1,7 @@
 package ua.nure.tanasiuk.resource;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +64,7 @@ public class RouteResource {
     @PostMapping
     @Authorization("Bearer")
     public ResponseEntity<RouteDto> create(@RequestParam Long requestInitiatorId,
-                                           @RequestBody RouteRequest routeRequest) {
+                                           @RequestBody RouteRequest routeRequest) throws JsonProcessingException {
         return ResponseEntity.ok(routeService.create(routeRequest, requestInitiatorId));
     }
 
@@ -109,7 +110,7 @@ public class RouteResource {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "")
     })
-    @GetMapping("/ticket/alternatives")
+    @GetMapping("/ticket/{id}/alternatives")
     @Authorization("Bearer")
     public ResponseEntity<List<Ticket>> getAlternatives(@RequestParam Long requestInitiatorId,
                                                         @PathVariable("id") int id) {

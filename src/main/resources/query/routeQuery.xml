@@ -4,7 +4,7 @@
 
 <properties>
     <entry key='getRouteById'>
-        select r."name", r.id, r.creation_date, r.is_favorite, json_agg(a.*) as tickets
+        select r."name", r.id, r.creation_date, r.is_favorite, r.factor, r.transport, json_agg(a.*) as tickets
         from route as r
         inner join ticket_route as tr on tr.route_id = r.id
         inner join (
@@ -21,7 +21,7 @@
         group by r.id, r.creation_date, r.is_favorite
     </entry>
     <entry key='getFavorites'>
-        select r."name", r.id, r.creation_date, r.is_favorite, json_agg(a.*) as tickets
+        select r."name", r.id, r.creation_date, r.is_favorite, r.factor, r.transport, json_agg(a.*) as tickets
         from route as r
         inner join ticket_route as tr on tr.route_id = r.id
         inner join (
@@ -38,7 +38,7 @@
         group by r.id, r.creation_date, r.is_favorite
     </entry>
     <entry key='getHistory'>
-        select r."name", r.id, r.creation_date, r.is_favorite, json_agg(a.*) as tickets
+        select r."name", r.id, r.creation_date, r.is_favorite, r.factor, r.transport, json_agg(a.*) as tickets
         from route as r
         inner join ticket_route as tr on tr.route_id = r.id
         inner join (
@@ -65,8 +65,8 @@
     </entry>
     <entry key='createRoute'>
         INSERT INTO route
-        (owner_id, is_favorite, creation_date, "name")
-        VALUES(:userId, false, now(), :name)
+        (owner_id, is_favorite, creation_date, "name", factor, transport)
+        VALUES(:userId, false, now(), :name, :factor, :transport)
     </entry>
     <entry key='clearRoute'>
         delete
@@ -93,6 +93,7 @@
             and ttt.departure_time + INTERVAL '12' HOUR  >= t.departure_time
             group by t.id
             order by t.departure_time
+            limit 5
         ) t
     </entry>
 </properties>

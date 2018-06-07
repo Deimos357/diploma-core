@@ -24,4 +24,6 @@ public class RouteDto {
     private List<Ticket> tickets;
     private boolean isFavorite;
     private String name;
+    private Double factor;
+    private String transport;
 }

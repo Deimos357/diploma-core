@@ -4,10 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
-import ua.nure.tanasiuk.dto.RouteDto;
 import ua.nure.tanasiuk.dto.Ticket;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -25,7 +23,7 @@ public class TicketListRowMapper implements RowMapper<List<Ticket>> {
         try {
             String ticketsString = resultSet.getString("tickets");
             return objectMapper.readValue(ticketsString, new TypeReference<List<Ticket>>() { });
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }

@@ -1,5 +1,7 @@
 package ua.nure.tanasiuk.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,6 +17,7 @@ import ua.nure.tanasiuk.dto.Ticket;
 import ua.nure.tanasiuk.model.Station;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,13 +26,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class RouteService {
     private final RouteDao routeDao;
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     @Value("${route-creator.host}${route-creator.route}")
     private String routeCreatorUrl;
 
-    public RouteService(RouteDao routeDao, RestTemplate restTemplate) {
+    public RouteService(RouteDao routeDao, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.routeDao = routeDao;
         this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Transactional(readOnly = true)
@@ -54,7 +59,13 @@ public class RouteService {
 
     @Transactional(readOnly = true)
     public List<Ticket> getAlternatives(int id) {
-        return routeDao.getAlternative(id);
+        List<Ticket> tickets = routeDao.getAlternative(id);
+
+        if (tickets.contains(null)) {
+            tickets = Collections.emptyList();
+        }
+
+        return tickets;
     }
 
     @Transactional(readOnly = true)
@@ -63,16 +74,21 @@ public class RouteService {
     }
 
     @Transactional
-    public RouteDto create(RouteRequest routeRequest, Long requestInitiatorId) {
+    public RouteDto create(RouteRequest routeRequest, Long requestInitiatorId) throws JsonProcessingException {
         List<Ticket> tickets = createRoute(routeRequest);
 
         AtomicBoolean isEmpty = new AtomicBoolean(false);
-        tickets.forEach(t -> isEmpty.set(t.getId() == -1));
+        tickets.forEach(t -> {
+            if (t.getId() == -1) {
+                isEmpty.set(true);
+            }
+        });
         if (isEmpty.get()) {
-            throw new RuntimeException();
+            throw new RuntimeException("No route");
         }
 
-        Long id = routeDao.create(routeRequest.getName(), requestInitiatorId);
+        String transport = objectMapper.writeValueAsString(routeRequest.getTransportTypes());
+        Long id = routeDao.create(routeRequest.getName(), routeRequest.getFactor(), transport, requestInitiatorId);
         addTicketsToRoute(tickets, id);
 
         return getById(id, requestInitiatorId);
@@ -83,11 +99,16 @@ public class RouteService {
         List<Ticket> tickets = editRoute(routeRequest);
 
         AtomicBoolean isEmpty = new AtomicBoolean(false);
-        tickets.forEach(t -> isEmpty.set(t.getId() == -1));
+        tickets.forEach(t -> {
+            if (t.getId() == -1) {
+                isEmpty.set(true);
+            }
+        });
         if (isEmpty.get()) {
-            throw new RuntimeException();
+            throw new RuntimeException("No route");
         }
 
+        // TODO edit factor and transport
         routeDao.clearRoute(routeId);
         addTicketsToRoute(tickets, routeId);
 

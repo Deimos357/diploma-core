@@ -31,6 +31,8 @@ public class RouteDtoRowMapper implements RowMapper<RouteDto> {
                 .creationDate(resultSet.getTimestamp("creation_date"))
                 .isFavorite(resultSet.getBoolean("is_favorite"))
                 .name(resultSet.getString("name"))
+                .factor(resultSet.getDouble("factor"))
+                .transport(resultSet.getString("transport"))
                 .tickets(tickets)
                 .build();
         } catch (IOException e) {

@@ -190,4 +190,12 @@
             <column name="name" type="VARCHAR"/>
         </addColumn>
     </changeSet>
+    <changeSet id="add route fields" author="tanasiuk">
+        <addColumn tableName="route">
+            <column name="factor" type="DOUBLE"/>
+        </addColumn>
+        <addColumn tableName="route">
+            <column name="transport" type="VARCHAR"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
