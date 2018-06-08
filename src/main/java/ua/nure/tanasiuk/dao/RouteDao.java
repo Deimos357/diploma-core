@@ -44,6 +44,8 @@ public class RouteDao extends GenericDaoImpl<RouteDto> {
     private String clearRoute;
     @Value("${addTicket}")
     private String addTicket;
+    @Value("${editRoute}")
+    private String edit;
 
     public RouteDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate,
                     RouteDtoRowMapper routeDtoRowMapper,
@@ -113,5 +115,14 @@ public class RouteDao extends GenericDaoImpl<RouteDto> {
         params.addValue("routeId", routeId);
         params.addValue("ticketId", ticketId);
         update(addTicket, params);
+    }
+
+    public void edit(Long routeId, String name, double factor, String transport) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", routeId);
+        params.addValue("name", name);
+        params.addValue("factor", factor);
+        params.addValue("transport", transport);
+        update(edit, params);
     }
 }

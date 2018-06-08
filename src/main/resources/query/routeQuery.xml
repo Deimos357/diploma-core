@@ -82,6 +82,11 @@
         (ticket_id, route_id)
         VALUES(:ticketId, :routeId)
     </entry>
+    <entry key='editRoute'>
+        UPDATE route
+        SET "name"=:name, factor=:factor, transport=:transport
+        WHERE id=:id
+    </entry>
     <entry key='getAlternative'>
         select json_agg(t.*) as tickets
         from (

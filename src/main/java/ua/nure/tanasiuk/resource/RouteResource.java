@@ -78,7 +78,7 @@ public class RouteResource {
     @Authorization("Bearer")
     public ResponseEntity<RouteDto> edit(@RequestParam Long requestInitiatorId,
                                          @PathVariable("id") Long id,
-                                         @RequestBody RouteRequest routeRequest) {
+                                         @RequestBody RouteRequest routeRequest) throws JsonProcessingException {
         return ResponseEntity.ok(routeService.edit(routeRequest, id, requestInitiatorId));
     }
 

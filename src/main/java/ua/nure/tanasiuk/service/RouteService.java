@@ -95,22 +95,40 @@ public class RouteService {
     }
 
     @Transactional
-    public RouteDto edit(RouteRequest routeRequest, Long routeId, Long requestInitiatorId) {
-        List<Ticket> tickets = editRoute(routeRequest);
+    public RouteDto edit(RouteRequest routeRequest, Long routeId, Long requestInitiatorId) throws JsonProcessingException {
+        if (routeRequest.getTickets() == null || routeRequest.getTickets().isEmpty()) { // full rebuild
+            List<Ticket> tickets = createRoute(routeRequest);
 
-        AtomicBoolean isEmpty = new AtomicBoolean(false);
-        tickets.forEach(t -> {
-            if (t.getId() == -1) {
-                isEmpty.set(true);
+            AtomicBoolean isEmpty = new AtomicBoolean(false);
+            tickets.forEach(t -> {
+                if (t.getId() == -1) {
+                    isEmpty.set(true);
+                }
+            });
+            if (isEmpty.get()) {
+                throw new RuntimeException("No route");
             }
-        });
-        if (isEmpty.get()) {
-            throw new RuntimeException("No route");
-        }
 
-        // TODO edit factor and transport
-        routeDao.clearRoute(routeId);
-        addTicketsToRoute(tickets, routeId);
+            routeDao.edit(routeId, routeRequest.getName(), routeRequest.getFactor(),
+                objectMapper.writeValueAsString(routeRequest.getTransportTypes()));
+            routeDao.clearRoute(routeId);
+            addTicketsToRoute(tickets, routeId);
+        } else { // edit ticket with recomp.
+            List<Ticket> tickets = editRoute(routeRequest);
+
+            AtomicBoolean isEmpty = new AtomicBoolean(false);
+            tickets.forEach(t -> {
+                if (t.getId() == -1) {
+                    isEmpty.set(true);
+                }
+            });
+            if (isEmpty.get()) {
+                throw new RuntimeException("No route");
+            }
+
+            routeDao.clearRoute(routeId);
+            addTicketsToRoute(tickets, routeId);
+        }
 
         return getById(routeId, requestInitiatorId);
     }
