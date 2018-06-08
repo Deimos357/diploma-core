@@ -48,13 +48,13 @@ public class RouteService {
     }
 
     @Transactional(readOnly = true)
-    public List<RouteDto> getHistory(Long requestInitiatorId) {
-        return routeDao.getHistory(requestInitiatorId);
+    public List<RouteDto> getHistory(Long requestInitiatorId, int offset) {
+        return routeDao.getHistory(requestInitiatorId, offset);
     }
 
     @Transactional(readOnly = true)
-    public List<RouteDto> getFavorites(Long requestInitiatorId) {
-        return routeDao.getFavorites(requestInitiatorId);
+    public List<RouteDto> getFavorites(Long requestInitiatorId, int offset) {
+        return routeDao.getFavorites(requestInitiatorId, offset);
     }
 
     @Transactional(readOnly = true)

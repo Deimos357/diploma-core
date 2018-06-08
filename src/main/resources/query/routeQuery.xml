@@ -36,7 +36,8 @@
         ) a on a.id = tr.ticket_id
         where r.owner_id = :userId and r.is_favorite
         group by r.id, r.creation_date, r.is_favorite
-        order by r.creation_date
+        order by r.id desc
+        limit :limit offset :offset
     </entry>
     <entry key='getHistory'>
         select r."name", r.id, r.creation_date, r.is_favorite, r.factor, r.transport, json_agg(a.*) as tickets
@@ -54,7 +55,8 @@
         ) a on a.id = tr.ticket_id
         where r.owner_id = :userId
         group by r.id, r.creation_date, r.is_favorite
-        order by r.creation_date
+        order by r.id desc
+        limit :limit offset :offset
     </entry>
     <entry key='switchFavorite'>
         update route

@@ -43,8 +43,9 @@ public class RouteResource {
     })
     @GetMapping("/history")
     @Authorization("Bearer")
-    public ResponseEntity<List<RouteDto>> getHistory(@RequestParam Long requestInitiatorId) {
-        return ResponseEntity.ok(routeService.getHistory(requestInitiatorId));
+    public ResponseEntity<List<RouteDto>> getHistory(@RequestParam Long requestInitiatorId,
+                                                     @RequestParam int offset) {
+        return ResponseEntity.ok(routeService.getHistory(requestInitiatorId, offset));
     }
 
     @ApiOperation("")
@@ -53,8 +54,9 @@ public class RouteResource {
     })
     @GetMapping("/favorites")
     @Authorization("Bearer")
-    public ResponseEntity<List<RouteDto>> getFavorites(@RequestParam Long requestInitiatorId) {
-        return ResponseEntity.ok(routeService.getFavorites(requestInitiatorId));
+    public ResponseEntity<List<RouteDto>> getFavorites(@RequestParam Long requestInitiatorId,
+                                                       @RequestParam int offset) {
+        return ResponseEntity.ok(routeService.getFavorites(requestInitiatorId, offset));
     }
 
     @ApiOperation("")

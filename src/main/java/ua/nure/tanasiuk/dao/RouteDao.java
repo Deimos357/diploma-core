@@ -21,6 +21,8 @@ import java.util.List;
 @Slf4j
 @PropertySource("classpath:query/routeQuery.xml")
 public class RouteDao extends GenericDaoImpl<RouteDto> {
+    private final int limit = 10;
+
     private final RouteDtoRowMapper routeDtoRowMapper;
     private final TicketListRowMapper ticketListRowMapper;
 
@@ -61,15 +63,19 @@ public class RouteDao extends GenericDaoImpl<RouteDto> {
         return query(getAlternative, params, ticketListRowMapper);
     }
 
-    public List<RouteDto> getFavorites(Long requestInitiatorId) {
+    public List<RouteDto> getFavorites(Long requestInitiatorId, int offset) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("userId", requestInitiatorId);
+        params.addValue("offset", offset * limit);
+        params.addValue("limit", limit);
         return query(getFavorites, params, routeDtoRowMapper);
     }
 
-    public List<RouteDto> getHistory(Long requestInitiatorId) {
+    public List<RouteDto> getHistory(Long requestInitiatorId, int offset) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("userId", requestInitiatorId);
+        params.addValue("offset", offset * limit);
+        params.addValue("limit", limit);
         return query(getHistory, params, routeDtoRowMapper);
     }
 
