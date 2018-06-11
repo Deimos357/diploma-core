@@ -23,7 +23,8 @@ public class UserResource {
 
     @ApiOperation("Get current user profile")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Current user profile was retrieved")
+        @ApiResponse(code = 200, message = "Current user profile was retrieved"),
+        @ApiResponse(code = 400, message = "Getting current user profile was failed")
     })
     @GetMapping("/me")
     @Authorization("Bearer")
