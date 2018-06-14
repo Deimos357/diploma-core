@@ -20,4 +20,18 @@
     <entry key='findUserById'>
         SELECT * FROM user_info WHERE id = :id
     </entry>
+    <entry key='changePassword'>
+        update user_info
+        set password = :newPas
+        where id = :id
+    </entry>
+    <entry key='editProfile'>
+        update user_info
+        set email = :email, username = :username
+        where id = :id
+    </entry>
+    <entry key='deleteProfile'>
+        delete from user_info
+        where id = :id
+    </entry>
 </properties>

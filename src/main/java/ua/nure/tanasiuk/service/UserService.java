@@ -1,6 +1,7 @@
 package ua.nure.tanasiuk.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.nure.tanasiuk.dao.UserIdentityDao;
@@ -13,9 +14,11 @@ import java.util.Date;
 @Slf4j
 public class UserService {
     private final UserIdentityDao userIdentityDao;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserIdentityDao userIdentityDao) {
+    public UserService(UserIdentityDao userIdentityDao, PasswordEncoder passwordEncoder) {
         this.userIdentityDao = userIdentityDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -35,11 +38,18 @@ public class UserService {
 
     @Transactional
     public void changePassword(ChangePasswordDto changePasswordDto, Long requestInitiatorId) {
-        // TODO
+        changePasswordDto.setNewPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+
+        userIdentityDao.changePassword(changePasswordDto, requestInitiatorId);
     }
 
     @Transactional
     public void editProfile(UserIdentity userData, Long requestInitiatorId) {
-        // TODO
+        userIdentityDao.editProfile(userData, requestInitiatorId);
+    }
+
+    @Transactional
+    public void deleteProfile(Long requestInitiatorId) {
+        userIdentityDao.deleteProfile(requestInitiatorId);
     }
 }

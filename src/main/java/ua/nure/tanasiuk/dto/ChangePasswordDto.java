@@ -1,14 +1,12 @@
 package ua.nure.tanasiuk.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class ChangePasswordDto {
     private String oldPassword;
     private String newPassword;

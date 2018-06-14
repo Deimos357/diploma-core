@@ -55,4 +55,15 @@ public class UserResource {
         userService.editProfile(userData, requestInitiatorId);
         return ResponseEntity.ok().build();
     }
+
+    @ApiOperation("")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "")
+    })
+    @DeleteMapping("/me")
+    @Authorization("Bearer")
+    public ResponseEntity deleteProfile(@RequestParam Long requestInitiatorId) {
+        userService.deleteProfile(requestInitiatorId);
+        return ResponseEntity.ok().build();
+    }
 }
